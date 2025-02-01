@@ -3,192 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zsin Fun Games</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #1e1e1e;
-            color: white;
-        }
-        h1 {
-            margin-top: 20px;
-        }
-        .container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        #gameArea {
-            margin-top: 20px;
-        }
-        .ball {
-            width: 30px;
-            height: 30px;
-            background-color: white;
-            border-radius: 50%;
-            position: absolute;
-        }
-        #gravityGame {
-            width: 400px;
-            height: 500px;
-            background: black;
-            position: relative;
-            margin: 20px auto;
-            border: 2px solid white;
-        }
-        footer {
-            margin-top: 20px;
-            font-weight: bold;
-        }
-    </style>
+    <title>Zain's Fun Arcade</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <h1>Welcome to Zain's Fun Games</h1>
+    <h1>Welcome to Zain's Fun Arcade</h1>
     <div class="container">
-        <button onclick="startClickSpeedTest()">Click Speed Test</button>
-        <button onclick="showRandomFact()">Random Fact Generator</button>
-        <button onclick="startGuessNumber()">Guess the Number</button>
-        <button onclick="startGravityBall()">Gravity Ball</button>
-        <button onclick="startPenaltyShootout()">Penalty Shootout</button>
+        <div class="game-card" onclick="startClickSpeedTest()">Click Speed Test</div>
+        <div class="game-card" onclick="showRandomFact()">Random Fact</div>
+        <div class="game-card" onclick="startGuessNumber()">Guess the Number</div>
+        <div class="game-card" onclick="startGravityBall()">Gravity Ball</div>
+        <div class="game-card" onclick="startPenaltyShootout()">Penalty Shootout</div>
+        <div class="game-card" onclick="startSpendGame()">Spend Zain's Money</div>
     </div>
 
     <div id="gameArea"></div>
 
-    <footer>Made by zsin</footer>
+    <footer>Made by Zain</footer>
 
-    <script>
-        function startClickSpeedTest() {
-            let clicks = 0;
-            let timeLeft = 10;
-            document.getElementById("gameArea").innerHTML = `
-                <h2>Click Speed Test</h2>
-                <p>Click as fast as you can in <span id="timer">10</span> seconds!</p>
-                <button id="clickButton">Click Me!</button>
-                <p>Clicks: <span id="clickCount">0</span></p>
-            `;
-
-            document.getElementById("clickButton").onclick = () => {
-                clicks++;
-                document.getElementById("clickCount").innerText = clicks;
-            };
-
-            let timer = setInterval(() => {
-                timeLeft--;
-                document.getElementById("timer").innerText = timeLeft;
-                if (timeLeft === 0) {
-                    clearInterval(timer);
-                    alert(`Time's up! You clicked ${clicks} times.`);
-                }
-            }, 1000);
-        }
-
-        function showRandomFact() {
-            const facts = [
-                "Bananas are berries, but strawberries aren't.",
-                "Octopuses have three hearts.",
-                "Honey never spoils.",
-                "A day on Venus is longer than a year on Venus.",
-                "There are more stars in the universe than grains of sand on Earth."
-            ];
-            const fact = facts[Math.floor(Math.random() * facts.length)];
-            document.getElementById("gameArea").innerHTML = `<h2>Random Fact</h2><p>${fact}</p>`;
-        }
-
-        function startGuessNumber() {
-            let secretNumber = Math.floor(Math.random() * 100) + 1;
-            document.getElementById("gameArea").innerHTML = `
-                <h2>Guess the Number</h2>
-                <p>Guess a number between 1 and 100:</p>
-                <input type="number" id="guessInput">
-                <button onclick="checkGuess()">Submit Guess</button>
-                <p id="result"></p>
-            `;
-
-            window.checkGuess = function() {
-                let guess = parseInt(document.getElementById("guessInput").value);
-                let result = document.getElementById("result");
-                if (guess < secretNumber) result.innerText = "Too low! Try again.";
-                else if (guess > secretNumber) result.innerText = "Too high! Try again.";
-                else result.innerText = "Correct! You guessed it!";
-            };
-        }
-
-        function startGravityBall() {
-            document.getElementById("gameArea").innerHTML = `<h2>Gravity Ball</h2><div id="gravityGame"></div>`;
-            const gameArea = document.getElementById("gravityGame");
-
-            gameArea.onclick = function(e) {
-                let ball = document.createElement("div");
-                ball.classList.add("ball");
-                ball.style.left = `${e.clientX - gameArea.offsetLeft}px`;
-                ball.style.top = `0px`;
-                gameArea.appendChild(ball);
-
-                let speed = 0;
-                function fall() {
-                    speed += 0.5;
-                    ball.style.top = `${parseFloat(ball.style.top) + speed}px`;
-                    if (parseFloat(ball.style.top) + 30 < 500) {
-                        requestAnimationFrame(fall);
-                    }
-                }
-                fall();
-            };
-        }
-
-        function startPenaltyShootout() {
-            document.getElementById("gameArea").innerHTML = `
-                <h2>Penalty Shootout</h2>
-                <p>Click the ball to shoot! Score by avoiding the goalkeeper.</p>
-                <h3>Score: <span id="score">0</span></h3>
-                <div style="position:relative; width:400px; height:500px; background:green; margin:auto; border:5px solid white;">
-                    <div style="width:100%; height:100px; background:white; position:absolute; top:0; border-bottom:5px solid black;">
-                        <div id="goalkeeper" style="width:50px; height:50px; background:red; position:absolute; top:40px; left:175px; border-radius:50%;"></div>
-                    </div>
-                    <div id="ball" style="width:30px; height:30px; background:white; position:absolute; bottom:10px; left:185px; border-radius:50%;"></div>
-                </div>
-            `;
-
-            let score = 0;
-            const ball = document.getElementById("ball");
-            const keeper = document.getElementById("goalkeeper");
-            const scoreDisplay = document.getElementById("score");
-
-            function moveGoalkeeper() {
-                let randomPos = Math.floor(Math.random() * 350);
-                keeper.style.left = randomPos + "px";
-            }
-
-            function shootBall() {
-                ball.style.transition = "bottom 0.5s ease";
-                ball.style.bottom = "400px";
-
-                setTimeout(() => {
-                    if (ball.offsetLeft > keeper.offsetLeft - 30 && ball.offsetLeft < keeper.offsetLeft + 50) {
-                        alert("Saved! Try again.");
-                    } else {
-                        score++;
-                        scoreDisplay.innerText = score;
-                        alert("Goal! ⚽🎉");
-                    }
-                    ball.style.transition = "none";
-                    ball.style.bottom = "10px";
-                    moveGoalkeeper();
-                }, 500);
-            }
-
-            ball.addEventListener("click", shootBall);
-            setInterval(moveGoalkeeper, 1000);
-        }
-    </script>
-
+    <script src="script.js"></script>
 </body>
 </html>
